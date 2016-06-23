@@ -4,7 +4,9 @@ set -e
 
 MVN_SETTINGS_PATH=${1-~/.m2/settings.xml}
 
-git checkout development
+build_branch=`git rev-parse --abbrev-ref HEAD`
+
+git checkout $build_branch
 
 unset RELEASE_VER
 unset NEW_DEV_VER
@@ -12,12 +14,12 @@ unset NEW_DEV_VER
 release_properties_path=overture.release.properties
 echo "Checking for ${release_properties_path}"
 if [ -e "$release_properties_path" ]; then
-  echo "File exists: ${release_properties_path}"
-  export RELEASE_VER=$(head -n 1 $release_properties_path | tail -1 | cut -d'=' -f2)
-  export NEW_DEV_VER=$(head -n 2 $release_properties_path | tail -1 | cut -d'=' -f2)
+		echo "File exists: ${release_properties_path}"
+		export RELEASE_VER=$(head -n 1 $release_properties_path | tail -1 | cut -d'=' -f2)
+		export NEW_DEV_VER=$(head -n 2 $release_properties_path | tail -1 | cut -d'=' -f2)
 else
-  echo "No release version information available!"
-  exit 1
+		echo "No release version information available!"
+		exit 1
 fi
 
 # remove all spaces in version numbers
@@ -81,13 +83,13 @@ git tag -a Release/$RELEASE_VER -m "${RTAGMSG}"
 echo 
 echo "Release tag fixed"
 echo 
-echo "Now do the same change for development with version ${NEW_DEV_VER}"
+echo "Now do the same change for ${build_branch} with version ${NEW_DEV_VER}"
 
-# now fix development
+# now fix $build_branch
 echo "Checkout the release tag as detached HEAD"
 git checkout Release/$RELEASE_VER
-echo "Pick last development commit: [maven-release-plugin] prepare for next development iteration'"
-git cherry-pick development
+echo "Pick last ${build_branch} commit: [maven-release-plugin] prepare for next development iteration'"
+git cherry-pick $build_branch
 
 #fix the pom:
 echo "Patch the ide/pom.xml with new parent version ${NEW_DEV_VER}, and self version ${RELEASE_VER}"
@@ -108,36 +110,52 @@ git reset --soft HEAD~2 && git commit -m"$(git log --format=%B --reverse HEAD..H
 #get sha for detached head
 SHADEV=`git rev-parse HEAD`
 
-echo "Checkout development"
+echo "Checkout ${build_branch}"
 
-git checkout development 
-echo "Nuke last two commits in development"
+git checkout $build_branch 
+echo "Nuke last two commits in ${build_branch}"
 git reset --hard HEAD^^
-echo "Rebase the corrected detached HEAD on top of development"
+echo "Rebase the corrected detached HEAD on top of ${build_branch}"
 git rebase $SHADEV
 
 
 ## all branches/tags are now fixed using tycho set version
 echo 
 echo "Git modifications required are now performed"
-echo " - fixed development"
+echo " - fixed ${build_branch}"
 echo " - fixed Release/${RELEASE_VER}"
 
 
 # perform the release
-exit
 
-read -p "Do you want to proceed with releasing the tag: Release/${RELEASE_VER}? (y/n?)" -n 1 -r
-echo    # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
+perform_action=none
+
+if [ -z ${batchmode+x} ]; then 
+		echo "interactive release mode"
+		read -p "Do you want to proceed with releasing the tag: Release/${RELEASE_VER}? (y/n?)" -n 1 -r
+		echo    # (optional) move to a new line
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+				perform_action=release
+		fi
+else
+		echo "batch mode: ${batch_mode}"
+		if [ $batchmode = "release" ]; then
+				perform_action=release
+		fi
+fi  
+
+
+
+
+if [ $perform_action = "release" ]; then
     echo "Git push --follow-tags"
     git push --follow-tags
     echo "Perform release with profile 'With-IDE'"
-	mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -q -s $MVN_SETTINGS_PATH
-	# > release.log
+		mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -q -s $MVN_SETTINGS_PATH
+		# > release.log
 else
-	echo "Review local changed and manually run: 'git push --follow-tags && mvn -Dmaven.repo.local=repository release:perform' to release"
+		echo "Review local changed and manually run: 'git push --follow-tags && mvn -Dmaven.repo.local=repository release:perform' to release"
 fi
 
 
