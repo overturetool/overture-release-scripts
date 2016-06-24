@@ -134,7 +134,8 @@ git cherry-pick $build_branch
 echo "Patch the ide/pom.xml with new parent version ${NEW_DEV_VER}, and self version ${RELEASE_VER}"
 
 sed -i{} "s|<version>${RELEASE_VER}</version>|<version>${NEW_DEV_VER}</version>|" ide/pom.xml
-sed -i{} "s|</parent>|</parent><version>${RELEASE_VER}</version>|" ide/pom.xml
+sed -i{} 's|</parent>|</parent>\
+<version>'"${RELEASE_VER}"'</version>|' ide/pom.xml
 
 mvn -Dmaven.repo.local=repository -Dtycho.mode=maven tycho-versions:set-version -DnewVersion=${NEW_DEV_VER} -f ide/pom.xml -q
 
