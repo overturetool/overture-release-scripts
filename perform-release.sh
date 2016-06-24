@@ -96,7 +96,8 @@ git checkout Release/$RELEASE_VER
 echo "Patch the ide/pom.xml with new parent version ${RELEASE_VER}, and old self version ${VERSION}"
 
 sed -i{} "s|<version>${VERSION}</version>|<version>${RELEASE_VER}</version>|" ide/pom.xml
-sed -i{} "s|</parent>|</parent><version>${VERSION}</version>|" ide/pom.xml
+sed -i{} 's|</parent>|</parent>\
+<version>'"${VERSION}"'</version>|' ide/pom.xml
 
 echo "Tycho-versions set-version to: ${RELEASE_VER}"
 mvn -Dmaven.repo.local=repository -Dtycho.mode=maven tycho-versions:set-version -DnewVersion=${RELEASE_VER} -f ide/pom.xml -q
