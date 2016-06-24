@@ -6,6 +6,8 @@ MVN_SETTINGS_PATH=${1-~/.m2/settings.xml}
 
 build_branch=`git rev-parse --abbrev-ref HEAD`
 
+echo "Building from branch: ${build_branch}"
+
 git checkout $build_branch
 
 unset RELEASE_VER
@@ -109,7 +111,7 @@ git commit -m "Bump ide/ to version ${RELEASE_VER}"
 # squash the last two commits
 git reset --soft HEAD~2 && git commit -m"$(git log --format=%B --reverse HEAD..HEAD@{1})"
 
-echo "Reset tag: Release/${RELEASE-VER} to here"
+echo "Reset tag: Release/${RELEASE_VER} to here"
 # get last tag message
 
 RTAGMSG=`git cat-file -p $(git rev-parse $(git tag -l | tail -n1)) | tail -n +6`
