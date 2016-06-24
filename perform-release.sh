@@ -35,10 +35,48 @@ echo "Current version  : ${VERSION}"
 echo "Next dev version : ${NEW_DEV_VER}"
 echo "Release version  : ${RELEASE_VER}"
 
-echo 
-echo "Removing release properties"
-git rm $release_properties_path
-git commit -m "Removing ${release_properties_path}. Release=${RELEASE_VER}, next dev=${NEW_DEV_VER}"
+#Validate version number formats.
+if ! echo $VERSION | grep '^[:0-9:]\+\.[:0-9:]\+\.[:0-9:]\+-SNAPSHOT$' > /dev/null
+then
+	echo "Incorrect format for current version number."
+	exit 1
+fi
+
+if ! echo $RELEASE_VER | grep '^[:0-9:]\+\.[:0-9:]\+\.[:0-9:]\+$' > /dev/null
+then
+	echo "Incorrect format for release version number."
+	exit 1
+fi
+
+if ! echo $NEW_DEV_VER | grep '^[:0-9:]\+\.[:0-9:]\+\.[:0-9:]-SNAPSHOT$' > /dev/null
+then
+	echo "Incorrect format for new development version number."
+	exit 1
+fi
+
+#Turn formatted version numbers into actual numbers.
+tmpVERSION=${VERSION/-SNAPSHOT/""}
+tmpVERSION=${tmpVERSION/./""}
+tmpVERSION=${tmpVERSION/./""}
+
+tmpRELEASE_VER=${RELEASE_VER/./""}
+tmpRELEASE_VER=${tmpRELEASE_VER/./""}
+
+tmpNEW_DEV_VER=${NEW_DEV_VER/-SNAPSHOT/""}
+tmpNEW_DEV_VER=${tmpNEW_DEV_VER/./""}
+tmpNEW_DEV_VER=${tmpNEW_DEV_VER/./""}
+
+#Ensure correct relationship among verison numbers.
+if (( tmpVERSION >= tmpRELEASE_VER ))
+then
+	echo "ERROR:  Release version number is not greater than current version number."
+	exit 1
+fi
+
+if (( tmpRELEASE_VER >= tmpNEW_DEV_VER))
+then
+	echo "ERROR:  New development version number is not greater than new release version number."
+fi
 
 
 
