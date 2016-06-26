@@ -56,26 +56,26 @@ then
 	exit 1
 fi
 
-#Turn formatted version numbers into actual numbers.
-tmpVERSION=${VERSION/-SNAPSHOT/""}
-tmpVERSION=${tmpVERSION/./""}
-tmpVERSION=${tmpVERSION/./""}
+#Turn formatted version numbers into actual numbers for easy validation using numeric comparisons.
+tmp_VERSION=${VERSION/-SNAPSHOT/""}
+tmp_VERSION=${tmp_VERSION/./""}
+tmp_VERSION=${tmp_VERSION/./""}
 
-tmpRELEASE_VER=${RELEASE_VER/./""}
-tmpRELEASE_VER=${tmpRELEASE_VER/./""}
+tmp_RELEASE_VER=${RELEASE_VER/./""}
+tmp_RELEASE_VER=${tmp_RELEASE_VER/./""}
 
-tmpNEW_DEV_VER=${NEW_DEV_VER/-SNAPSHOT/""}
-tmpNEW_DEV_VER=${tmpNEW_DEV_VER/./""}
-tmpNEW_DEV_VER=${tmpNEW_DEV_VER/./""}
+tmp_NEW_DEV_VER=${NEW_DEV_VER/-SNAPSHOT/""}
+tmp_NEW_DEV_VER=${tmp_NEW_DEV_VER/./""}
+tmp_NEW_DEV_VER=${tmp_NEW_DEV_VER/./""}
 
-#Ensure correct relationship among verison numbers.
-if (( tmpVERSION >= tmpRELEASE_VER ))
+#Ensure the three version numbers are in the correct relationship to each other.
+if (( tmp_VERSION >= tmp_RELEASE_VER ))
 then
 	echo "ERROR:  Release version number is not greater than current version number."
 	exit 1
 fi
 
-if (( tmpRELEASE_VER >= tmpNEW_DEV_VER))
+if (( tmp_RELEASE_VER >= tmp_NEW_DEV_VER))
 then
 	echo "ERROR:  New development version number is not greater than new release version number."
 fi
