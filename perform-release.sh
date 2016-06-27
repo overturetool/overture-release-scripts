@@ -194,7 +194,7 @@ if [ $perform_action = "release" ]; then
     echo "Git push --follow-tags"
     git push --follow-tags
     echo "Perform release with profile 'With-IDE'"
-		mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -q -s $MVN_SETTINGS_PATH
+		mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -q -s $MVN_SETTINGS_PATH -DlocalCheckout=true
 		# > release.log
 else
 		echo "Review local changed and manually run: 'git push --follow-tags && mvn -Dmaven.repo.local=repository release:perform' to release"
