@@ -87,7 +87,7 @@ mvn -Dmaven.repo.local=repository release:clean -q
 
 echo "Prepare new release -DpushChanges=false"
 
-mvn -Dmaven.repo.local=repository --batch-mode release:prepare -DreleaseVersion=${RELEASE_VER} -DdevelopmentVersion=${NEW_DEV_VER} -DpushChanges=false -q -s $MVN_SETTINGS_PATH
+mvn -Dmaven.repo.local=repository --batch-mode release:prepare -DreleaseVersion=${RELEASE_VER} -DdevelopmentVersion=${NEW_DEV_VER} -DpushChanges=false -s $MVN_SETTINGS_PATH 
 # > prepare.log
 
 echo "The changes just done locally by 'release:prepare' do not change the IDE versions, so this will be fixed now"
@@ -194,7 +194,7 @@ if [ $perform_action = "release" ]; then
     echo "Git push --follow-tags"
     git push --follow-tags
     echo "Perform release with profile 'With-IDE'"
-		mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -q -s $MVN_SETTINGS_PATH -DlocalCheckout=true
+		mvn -Dmaven.repo.local=repository --batch-mode release:perform -PWith-IDE -s $MVN_SETTINGS_PATH -DlocalCheckout=true
 		# > release.log
 else
 		echo "Review local changed and manually run: 'git push --follow-tags && mvn -Dmaven.repo.local=repository release:perform' to release"
