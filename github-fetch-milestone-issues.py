@@ -3,6 +3,7 @@
 import json
 import requests
 import os.path
+import datetime
 
 oauth_token=os.getenv("GITHUB_API_TOKEN")
 header={'Accept': 'application/vnd.github.full+json','Authorization': 'token '+oauth_token}
@@ -22,41 +23,81 @@ def write_issues(response):
 def write(string):
     print(string)
 
-def writeMilestone(title,url):
-    write(title)
+def writeMilestone(file,title,url,dueon,template):
+    if file == None:
+        return
+    
+    t =title+" - Release Notes"
+    
+    if dueon:
+        d = datetime.datetime.strptime(dueon, "%Y-%m-%dT%H:%M:%SZ")
+        t += " - {:%d %B %Y}".format(d)
+
+    write(t)
     write("Issues")
 
-    file.write("\n# ["+ title+"]("+url+")\n\n")
-    file.write("## Issues\n\n")
+    file.write("\n# ["+ t+"]("+url+")\n\n")
+    if template != None:
+        with open(template) as f:
+            for line in f:
+                file.write(line)
+    file.write("## Bugfixes\n\n")
+    file.write("Please note that the interactive list is at <"+url+">\n")
+    
 
-def writeIssue(state,title,url):
+def writeIssue(file,state,number, title,url):
+    if file == None:
+        return
+    
     write(state + " - " + title)
-    file.write(" * [" + state + " - "+title+"]("+url+")\n")
+    file.write("* [#" +str(number)+" "+ state + " - "+title+"]("+url+")\n")
 
-r = requests.get("http://api.github.com/repos/overturetool/overture/milestones?state=all", headers=header)
+r = requests.get("http://api.github.com/repos/overturetool/overture/milestones?state=closed", headers=header)
 
 file = open("output.txt", "w")
-
-
-print(r)
 
 if not r.status_code == 200:
         raise Exception(r.status_code)
 
 for milestone in r.json():
-#    print(milestone)
-    writeMilestone(milestone['title'],milestone['url'])
-#    write(milestone['title'])
-#    write(milestone['number'])
-#    write(milestone['url']) 
 
- #   print("Issues:")
+    version = milestone['title']
+    if version.startswith('v'):
+        version = version[1:]
+
+    mdname = "ReleaseNotes_"+version+".md"
+    mdnameabb = "ReleaseNotes_"+version+"_abbrev.md"
+    fileM = None
+    fileMabb = None
+    if os.path.isfile(mdname):
+        fileM = None
+        continue
+    else:
+        fileM = open(mdname, "w")
+        writeMilestone(fileM,"Overture "+version,milestone['html_url'],milestone['due_on'],"ReleaseNotes-template.md")
+
+
+    if os.path.isfile(mdnameabb):
+        fileMabb = None
+        
+    else:
+        fileMabb = open(mdnameabb, "w")
+        writeMilestone(fileMabb,"Overture "+version,milestone['html_url'],milestone['due_on'],"ReleaseNotes-template-abbrev.md")
+        
+    writeMilestone(file,version,milestone['url'],milestone['due_on'],None)
+
 
     ri = requests.get("http://api.github.com/repos/overturetool/overture/issues?state=all&milestone="+str(milestone['number']), headers=header)
     if not ri.status_code == 200:
         raise Exception(ri.status_code)
     for issue in ri.json():
-        writeIssue(issue['state'], issue['title'],issue['url'])
-    #write_issues(r)
-#file.write("Purchase Amount: %s" % TotalAmount)
+        writeIssue(file,issue['state'],issue['number'], issue['title'],issue['html_url'])
+        writeIssue(fileM,issue['state'],issue['number'], issue['title'],issue['html_url'])
+        if fileMabb != None:
+            writeIssue(fileMabb,issue['state'],issue['number'], issue['title'],issue['html_url'])
+    if fileM !=None:
+        fileM.close()
+    if fileMabb !=None:
+        fileMabb.close()
+
 file.close()
