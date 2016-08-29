@@ -4,7 +4,7 @@ The repo contains set of utility scripts to ease maintenance and the process of 
 
 ## Description of scripts
 
-### Generating release notes
+### Generate the release notes
 
 `github-fetch-milestone-issues.py`: Script for generating release notes for *closed* milestones. The template files `ReleaseNotes-template.md` and `ReleaseNotes-template-abbrev.md` must exist in the folder where the script is. If you are releasing Overture you may want to execute this script from `<overture-root>/documentation/releasenotes`.
 
