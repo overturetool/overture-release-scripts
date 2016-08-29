@@ -14,7 +14,7 @@ This repository contains several scripts that automate parts of the Overture rel
 
 ### Perform the release
 
-`perform-release.sh` Performs a Maven release with tycho mode enabled by the profile `With-IDE`. This script can be run in interactive mode, i.e. it stops before pushing/releasing. Alternatively, one can perform an automated release by setting the environment variable `batchmode=release`. Before this script is executed, the release version and the new development versions must be specified in the `overture.release.properties` file, which is located in the root of the tool repository. This file must be edited and comitted before running the script. Run script as `./perform-release.sh`.
+`perform-release.sh` Performs a Maven release with tycho mode enabled by the `With-IDE` profile. This script can be run in interactive mode, i.e. it stops before pushing/releasing. Alternatively, one can perform an automated release by setting the environment variable `batchmode=release`. Before this script is executed, the release version and the new development version must be specified in the `overture.release.properties` file, which is located in the root of the tool repository. This file must be edited and comitted before running the script. Run script as `./perform-release.sh`.
 
 In order to run this script you will need GPG set up as well as a login to access [Sonatype](http://oss.sonatype.org). For details, see the instructions in the [release notes](https://github.com/overturetool/overture/wiki/Release-Process).
 
