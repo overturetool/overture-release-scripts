@@ -18,6 +18,8 @@ This repository contains several scripts that automate parts of the Overture rel
 
 In order to run this script you will need GPG set up as well as a login to access [Sonatype](http://oss.sonatype.org). For details, see the instructions in the [release notes](https://github.com/overturetool/overture/wiki/Release-Process).
 
+_Note that_: The script is currently *not* checking out `master` and merging the corresponding release tag. When that's done trigger the `overture-master` build job on the overture.au.dk build server in order to release the IDE. 
+
 #### Hint
 
 If the `maven-gpg-plugin` is complaining that it "Cannot obtain passphrase in batch mode" you may want to supply your passphrase via your local settings (stored in the`settings.xml` file in the `.m2` folder). An example of how this can be done is shown below.
