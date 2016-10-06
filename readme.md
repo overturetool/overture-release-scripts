@@ -6,7 +6,7 @@ This repository contains several scripts that automate parts of the Overture rel
 
 ### Generate the release notes
 
-`github-fetch-milestone-issues.py`: Script for generating release notes for *closed* milestones. The template files `ReleaseNotes-template.md` and `ReleaseNotes-template-abbrev.md` must exist in the folder where the script is. If you are releasing Overture you may want to execute this script from `<overture-root>/documentation/releasenotes`.
+`github-fetch-milestone-issues.py`: Script for generating release notes for *closed* milestones. The template file `ReleaseNotes-template.md` must exist in the folder where the script is. If you are releasing Overture you may want to execute this script from `<overture-root>/documentation/releasenotes`.
 
 ### Update the website examples
 
