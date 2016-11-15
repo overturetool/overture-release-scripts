@@ -50,7 +50,7 @@ then
 	exit 1
 fi
 
-if ! echo $NEW_DEV_VER | grep '^[:0-9:]\+\.[:0-9:]\+\.[:0-9:]-SNAPSHOT$' > /dev/null
+if ! echo $NEW_DEV_VER | grep '^[:0-9:]\+\.[:0-9:]\+\.[:0-9:]\+-SNAPSHOT$' > /dev/null
 then
 	echo "Incorrect format for new development version number."
 	exit 1
