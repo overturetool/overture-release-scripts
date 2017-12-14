@@ -47,3 +47,6 @@ If the `maven-gpg-plugin` is complaining that it "Cannot obtain passphrase in ba
 ### Utility scripts (optional)
 
 `git-set-private-key.sh`: Utility script to configure git to use a specific private key. Use as `$(./git-set-private-key.sh ~/.ssh/id_rsa_custom)`
+
+`sign-overture.sh`: Utility script to sign the overture zip for mac. usa as: `$(./sign-overture.sh zip file name)`
+
