@@ -6,15 +6,25 @@ This repository contains several scripts that automate parts of the Overture rel
 
 ### Generate the release notes
 
-`github-fetch-milestone-issues.py`: Script for generating release notes for *closed* milestones. The template file `ReleaseNotes-template.md` must exist in the folder where the script is. If you are releasing Overture you may want to execute this script from `<overture-root>/documentation/releasenotes`.
+All of the following should happen inside the developement branch.
+
+Close the current [milestone](https://github.com/overturetool/overture/milestones) and move all the pending [issues](https://github.com/overturetool/overture/issues) to the next milestone. 
+
+[`github-fetch-milestone-issues.py`](https://raw.githubusercontent.com/overturetool/overture-release-scripts/master/github-fetch-milestone-issues.py): Script for generating release notes for *closed* milestones. The template file `ReleaseNotes-template.md` must exist in the folder where the script is. If you are releasing Overture you may want to execute this script from `<overture-root>/documentation/releasenotes`.
+
+Fill in the info in the release notes file, add it to git and commit.
+
+Change versions inside `overture.release.properties` which is located in the root of the tool repository.
+
+Push changes to ensure testing.
 
 ### Update the website examples
 
-`update-examples.sh`: Checks out the Overture standard examples, including the website, and adds the examples to the web site. After the script has been executed, the user must manually push the changes to the examples and website repositories. The instructions are provided by the script.
+Run `update-examples.sh` at some tmp folder: Checks out the Overture standard examples, including the website, and adds the examples to the web site. After the script has been executed, the user must manually push the changes to the examples and website repositories. The instructions are provided by the script.
 
 ### Perform the release
 
-`perform-release.sh` Performs a Maven release with tycho mode enabled by the `With-IDE` profile. This script can be run in interactive mode, i.e. it stops before pushing/releasing. Alternatively, one can perform an automated release by setting the environment variable `batchmode=release`. Before this script is executed, the release version and the new development version must be specified in the `overture.release.properties` file, which is located in the root of the tool repository. This file must be edited and comitted before running the script. Run script as `./perform-release.sh`.
+Run `perform-release.sh`in the root of the tool repository. It performs a Maven release with tycho mode enabled by the `With-IDE` profile. This script can be run in interactive mode, i.e. it stops before pushing/releasing. Alternatively, one can perform an automated release by setting the environment variable `batchmode=release`. Before this script is executed, the release version and the new development version must be specified in the `overture.release.properties` file, which is located in the root of the tool repository. This file must be edited and comitted before running the script. Run script as `./perform-release.sh`.
 
 In order to run this script you will need GPG set up as well as a login to access [Sonatype](http://oss.sonatype.org). For details, see the instructions in the [release notes](https://github.com/overturetool/overture/wiki/Release-Process).
 
