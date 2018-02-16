@@ -1,6 +1,7 @@
 # Release Scripts for Overture
 
-This repository contains several scripts that automate parts of the Overture release process.
+This repository contains several scripts that automate parts of the Overture release process as described in the [Release](https://github.com/overturetool/overture/wiki/Release-Process
+) wiki page.
 
 ## Description of scripts
 
@@ -24,11 +25,15 @@ Run `update-examples.sh` at some tmp folder: Checks out the Overture standard ex
 
 ### Perform the release
 
+#### Release the artifacts
+
 Run `perform-release.sh`in the root of the tool repository. It performs a Maven release with tycho mode enabled by the `With-IDE` profile. This script can be run in interactive mode, i.e. it stops before pushing/releasing. Alternatively, one can perform an automated release by setting the environment variable `batchmode=release`. Before this script is executed, the release version and the new development version must be specified in the `overture.release.properties` file, which is located in the root of the tool repository. This file must be edited and comitted before running the script. Run script as `./perform-release.sh`.
 
 In order to run this script you will need GPG set up as well as a login to access [Sonatype](http://oss.sonatype.org). For details, see the instructions in the [release notes](https://github.com/overturetool/overture/wiki/Release-Process).
 
-_Note that_: The script is currently *not* checking out `master` and merging the corresponding release tag. When that's done trigger the `overture-master` build job on the overture.au.dk build server in order to release the IDE. 
+#### Release the IDE of Overture
+
+Check out `master` and merge the release tag, push. When that's done trigger the `overture-master` build job on the overture.au.dk build server in order to release the IDE to be available in the p2 updates feature of eclipse. 
 
 #### Hint
 
