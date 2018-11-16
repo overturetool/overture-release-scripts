@@ -64,7 +64,7 @@ def writeIssue(file, state, number, title, url):
                ")\n")
 
 r = requests.get(
-    "http://api.github.com/repos/" + REPO_OWNER + "/" + REPO_NAME + "/milestones?state=closed",
+    "http://api.github.com/repos/" + REPO_OWNER + "/" + REPO_NAME + "/milestones?state=closed&sort=closed_at&direction=desc",
     headers=header)
 
 if not r.status_code == 200:
